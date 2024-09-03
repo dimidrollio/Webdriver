@@ -17,7 +17,7 @@ namespace PastebinTaskOne
 		public PastebinPastePageMap Map => new(_browser);
 		public string GetElementText(IWebElement webElement)
 		{
-			return webElement.Text;
+			return webElement.Text.Trim('\n', 'r');
 		}
 		public string GetElementText(IEnumerable<IWebElement> webElements)
 		{

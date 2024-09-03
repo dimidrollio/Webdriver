@@ -28,13 +28,20 @@ namespace PastebinTaskOne
 		public void SelectPasteExpiration(string toSelect)
 		{
 			var waiter = new WebDriverWait(_browser, TimeSpan.FromSeconds(5));
-			waiter.Until(x => Map.PasteExpirationDropdown.Enabled && Map.PasteExpirationDropdown.Displayed);
+			waiter.Until(x => Map.PasteExpirationDropdown.Displayed && Map.PasteExpirationDropdown.Enabled);
 			Map.PasteExpirationDropdown.Click();
 
 			var expirationObject = Map.GetDropdownObject(toSelect);
-			waiter.Until(obj => expirationObject.Displayed && expirationObject.Enabled);
-
-			expirationObject.Click();
+			waiter.Until(obj => Map.GetDropdownObject(toSelect).Displayed);
+			try
+			{
+				expirationObject.Click();
+			}
+			catch (ElementClickInterceptedException)
+			{
+				waiter.Until(obj => Map.GetDropdownObject(toSelect).Enabled);
+				expirationObject.Click();
+			}
 		}
 
 		public void SelectSyntaxHighlight(string toSelect)
@@ -46,7 +53,7 @@ namespace PastebinTaskOne
 
 			var syntaxHighlightObject = Map.GetDropdownObject(toSelect);
 
-			waiter.Until(obj =>  syntaxHighlightObject.Displayed && syntaxHighlightObject.Enabled);
+			waiter.Until(obj =>  syntaxHighlightObject.Displayed);
 			syntaxHighlightObject.Click();
 		}
 
@@ -61,9 +68,16 @@ namespace PastebinTaskOne
 		public void Submit()
 		{
 			var waiter = new WebDriverWait(_browser, TimeSpan.FromSeconds(5));
-			waiter.Until(x => Map.PasteSubmitButton.Enabled && Map.PasteSubmitButton.Displayed);
-
-			Map.PasteSubmitButton.Click();
+			waiter.Until(x => Map.PasteSubmitButton.Displayed && Map.PasteSubmitButton.Displayed);
+			try
+			{
+				Map.PasteSubmitButton.Click();
+			}
+			catch (ElementClickInterceptedException)
+			{
+				waiter.Until(x => Map.PasteSubmitButton.Displayed && Map.PasteSubmitButton.Displayed);
+				Map.PasteSubmitButton.Click();
+			}
 		}
     }
 }

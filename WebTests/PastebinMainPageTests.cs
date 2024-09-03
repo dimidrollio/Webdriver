@@ -30,11 +30,18 @@ namespace WebTests
 		{
 			var page = new PastebinMainPage(Browser);
 			page.Navigate();
-
-			page.PasteText("Hello from WebDriver");
-			page.SelectPasteExpiration("10 Minutes");
+			var expectedText = "Hello from WebDriver";
+			var expectedPasteExpiration = "10 Minutes";
+			page.PasteText(expectedText);
+			page.SelectPasteExpiration(expectedPasteExpiration);
 			page.Submit();
-			Assert.True(true);
+
+			var pastePage = new PastebinPastePage(Browser);
+			var actualText = pastePage.GetElementText(pastePage.Map.TextLinesPaste);
+			var expiration = pastePage.GetElementText(pastePage.Map.Expire);
+
+			Assert.Equal(expectedText, actualText);
+			Assert.Equal(expectedPasteExpiration, expiration);
 		}
 
 		[Fact]
